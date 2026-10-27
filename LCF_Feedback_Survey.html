@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>LCF Student Feedback</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f6f8;color:#1a1a1a;
+  font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:16px 14px 60px}
+header{background:#0b3d6b;color:#fff;border-radius:12px;padding:18px 18px 16px;margin-bottom:14px}
+header h1{margin:0 0 6px;font-size:20px}
+header .sub{margin:0 0 10px;font-size:13px;opacity:.9}
+header .note{margin:0;font-size:12.5px;background:rgba(255,255,255,.12);border-radius:8px;
+  padding:8px 10px;line-height:1.55}
+.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:14px;
+  box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.card h2{margin:0 0 4px;font-size:16px;color:#0b3d6b}
+.card h3{margin:16px 0 6px;font-size:14px;color:#0b3d6b}
+.hint{font-size:12.5px;color:#666;margin:0 0 10px}
+label{display:block;font-size:13px;color:#444;margin:10px 0 4px}
+label .opt{color:#7a8b99;font-weight:400}
+label .req{color:#c0392b}
+input[type=text],input[type=email],select,textarea{width:100%;padding:9px 10px;
+  border:1px solid #d3d9df;border-radius:8px;font:inherit;font-size:14px;background:#fff}
+textarea{min-height:70px;resize:vertical}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>div{flex:1 1 160px;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+.chip{border:1px solid #cfd8e0;background:#fbfcfd;border-radius:999px;padding:7px 13px;
+  font-size:13.5px;cursor:pointer;user-select:none}
+.chip.on{background:#0b3d6b;border-color:#0b3d6b;color:#fff}
+.modcard{background:#fff;border-radius:12px;padding:16px;margin-bottom:14px;
+  box-shadow:0 1px 3px rgba(0,0,0,.07);border-left:4px solid #0b3d6b}
+.modcard.non{border-left-color:#c98a00}
+.modcard h2{margin:0 0 2px;font-size:16px;color:#0b3d6b}
+.item{border:1px solid #e3e8ed;border-radius:10px;padding:12px;margin-bottom:10px;background:#fcfdfe}
+.item .ih{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.item .ih b{font-size:13.5px;color:#0b3d6b}
+.item .del{border:none;background:none;color:#a33;font-size:13px;cursor:pointer;padding:0}
+button.btn{background:#0b3d6b;color:#fff;border:none;border-radius:9px;padding:12px 16px;
+  font-size:15px;width:100%;cursor:pointer;margin-top:6px}
+button.btn.ghost{background:#fff;color:#0b3d6b;border:1px solid #0b3d6b}
+button.add{background:#eef4fa;color:#0b3d6b;border:1px dashed #9db9d3;border-radius:8px;
+  padding:8px 12px;font-size:13.5px;cursor:pointer;width:100%}
+.info{background:#eef4fa;border:1px solid #b9d0e4;border-radius:10px;padding:10px 12px;
+  font-size:12.5px;color:#0b3d6b;margin-bottom:14px}
+.replybox{background:#f2f8f3;border:1px solid #b6ddbc;border-radius:10px;padding:12px;margin:12px 0 4px}
+.replybox .q{font-size:13.5px;color:#2c6b34;font-weight:600;margin:0 0 6px}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th,td{border:1px solid #dde3e9;padding:6px 7px;text-align:left;vertical-align:top}
+th{background:#eef4fa}
+.ok{background:#e8f5e9;border:1px solid #9ad29e;border-radius:10px;padding:12px;color:#256b2b;
+  font-size:13.5px;margin-bottom:12px}
+.err{background:#fdecea;border:1px solid #e8a29d;border-radius:10px;padding:12px;color:#a33;
+  font-size:13.5px;margin-bottom:12px}
+.badge{display:inline-block;background:#e8f0f7;border:1px solid #b9d0e4;color:#0b3d6b;border-radius:999px;padding:5px 12px;font-size:13px;margin-bottom:10px}
+.hide{display:none}
+footer{font-size:12px;color:#888;text-align:center;margin-top:18px}
+code{background:#eef1f4;padding:1px 4px;border-radius:4px;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>LCF Student Feedback</h1>
+  <p class="sub">Year 1 &nbsp;|&nbsp; LCF Student Feedback</p>
+  <p class="note"><b>Anonymous by default.</b> Every field is optional — leave anything blank and nothing can be traced back to you. If you want a personal reply, say so and leave your WeChat ID or email.</p>
+</header>
+
+<div id="modeNote" class="info"></div>
+
+<!-- STEP 1 -->
+<section class="card">
+  <h2>Step 1 · Would you like a reply?</h2>
+
+
+  <div class="replybox">
+    <p class="q">Would you like to receive a direct reply about your feedback?</p>
+    <select id="f_want">
+      <option>No — keep me anonymous</option>
+      <option>Yes — please reply to me directly</option>
+    </select>
+    <div id="contactWrap" class="hide" style="margin-top:10px">
+      <label>Your WeChat ID or email address</label>
+      <input type="text" id="f_contact" placeholder="e.g. wechat_id  /  name@nottingham.edu.cn">
+      <p class="hint" style="margin:6px 0 0">Only used so staff can answer you one-to-one about this point.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 2 -->
+<section class="card">
+  <h2>Step 2 · Select what you want to report</h2>
+  <p class="hint">Only tick the areas you actually have feedback on. Unticked sections stay closed.</p>
+  <h3>Academic (by module)</h3>
+  <div class="chips" id="pickA"></div>
+  <h3>Non-academic (by system / service)</h3>
+  <div class="chips" id="pickN"></div>
+</section>
+
+<div id="cardsA"></div>
+<div id="cardsN"></div>
+
+<!-- FINAL -->
+<section class="card">
+  <h2>Final · Overall &amp; additional comments <span class="opt">(optional)</span></h2>
+  <label>The one thing you most want LCF to act on</label>
+  <textarea id="f_top" placeholder="One sentence. This becomes a priority item."></textarea>
+  <label>Positive feedback — what is working well and should continue</label>
+  <textarea id="f_praise" placeholder="LCF also reports good practice, not only problems."></textarea>
+  <label>Anything else</label>
+  <textarea id="f_extra"></textarea>
+  <button class="btn" id="btnSubmit">Submit feedback</button>
+  <p class="hint" style="margin-top:8px" id="submitHint"></p>
+</section>
+
+<!-- RESULT -->
+<section class="card hide" id="secResult">
+  <h2>Submission complete</h2>
+  <div id="okMsg"></div>
+  <div id="preview"></div>
+  <button class="btn ghost" id="btnCopy">Copy as text</button>
+  <button class="btn ghost" id="btnCsv">Download CSV</button>
+  <button class="btn ghost" id="btnJson">Download JSON</button>
+  <button class="btn ghost" id="btnAgain">Submit another response</button>
+</section>
+
+<footer>LCF Feedback Survey · Anonymous by default · Year 1</footer>
+</div>
+
+<script>
+/* ============================================================
+   ***  THE ONLY SECTION YOU NEED TO EDIT  ***
+   modules / nonAcademic: add or remove per your school's list.
+   SUBMIT_ENDPOINT: set to your collection URL to collect centrally.
+   Leave "" to collect offline (CSV download / copy-and-send).
+   Instructor and session are free-text on purpose — there are far
+   too many classes to list.
+   ============================================================ */
+const CONFIG = {
+  modules: [
+    {id:"MATH",  name:"Mathematics",            types:["Lecture","Seminar / Tutorial","Activity"]},
+    {id:"PHYS",  name:"Physics",                types:["Lecture","Seminar / Tutorial","Activity"]},
+    {id:"OCSA",  name:"OCSA (Oral & Communication Skills)", types:["Lecture","Seminar"]},
+    {id:"RWAC",  name:"RWAC (Reading & Writing in Academic Contexts)", types:["Lecture","Seminar"]},
+    {id:"CNC",   name:"Chinese Culture Course",  types:["Lecture","Seminar"]},
+    {id:"SPDPO", name:"SPDPO Lecture",           types:["Lecture"]},
+    {id:"PE",    name:"Physical Education",      types:["Practical session"]}
+  ],
+  nonAcademic: [
+    {id:"ACT", name:"Activity Registration System", types:["Malfunction / bug","Cumbersome process","Information not transparent","Rules unreasonable","Account & permission","Slow response","Other"]},
+    {id:"ATT", name:"Attendance Assessment System", types:["Malfunction / bug","Cumbersome process","Information not transparent","Rules unreasonable","Account & permission","Slow response","Other"]},
+    {id:"LIB", name:"Library / Study Space",        types:["Not enough seats","Opening hours","Resources & collection","Environment & noise","Booking system","Other"]},
+    {id:"IT",  name:"IT / Network / Platforms",    types:["Campus Wi-Fi","Moodle / teaching platforms","Account & login","Printing & equipment","Other"]},
+    {id:"FAC", name:"Classrooms & Lab Facilities", types:["Classroom environment (AC / audio / projector)","Lab equipment","Safety & ventilation","Accessibility","Other"]},
+    {id:"WEL", name:"Wellbeing & Support",         types:["Counselling","Academic support","Financial hardship","International student support","Other"]},
+    {id:"ADM", name:"Admin / Finance / Visa",      types:["Registration & records","Fees & billing","Visa & residence","Certificates & documents","Other"]},
+    {id:"CAM", name:"Campus Life & Community",     types:["Events & activities","Student societies","Accommodation","Catering","Transport","Other"]},
+    {id:"OTH", name:"Other non-academic",          types:["Other"]}
+  ],
+  acadTypes: ["Content & pace","Difficulty & workload","Assessment & coursework","Teaching style & interaction","Feedback & response (incl. marking turnaround)","Materials & learning resources","Attendance & sign-in","Other"],
+  scope: ["Only me","Me and a few students (2-5)","Many students (6-15)","Most students (15+)","Prefer not to say"],
+  urgency: ["Low","Medium","High"],
+  SUBMIT_ENDPOINT: ""
+};
+/* =====================  end of config  ===================== */
+
+const PROGRAM = "";
+const PROGRAM_LABEL = "Year 1";
+
+const $ = s => document.querySelector(s);
+const el = (t,c,h) => {const e=document.createElement(t); if(c)e.className=c; if(h!=null)e.innerHTML=h; return e;};
+const esc = s => String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+$("#f_want").addEventListener("change", ()=>{
+  $("#contactWrap").classList.toggle("hide", $("#f_want").value.indexOf("Yes") !== 0);
+});
+
+if(CONFIG.SUBMIT_ENDPOINT){
+  $("#modeNote").innerHTML = "<b>Online mode.</b> Your answers go straight to the LCF collection server. Nothing else needed.";
+  $("#submitHint").textContent = "Uploaded automatically to the LCF server.";
+} else {
+  $("#modeNote").innerHTML = "<b>Offline mode.</b> After submitting, download the CSV (or copy the text) and send it to your LCF representative.";
+  $("#submitHint").textContent = "Please send the downloaded CSV to your LCF representative.";
+}
+
+const picked = {A:new Set(), N:new Set()};
+CONFIG.modules.forEach(m=>{
+  const c = el("div","chip",esc(m.name));
+  c.onclick = ()=>{ c.classList.toggle("on"); picked.A.has(m.id)?picked.A.delete(m.id):picked.A.add(m.id); renderCards(); };
+  $("#pickA").appendChild(c);
+});
+CONFIG.nonAcademic.forEach(m=>{
+  const c = el("div","chip",esc(m.name));
+  c.onclick = ()=>{ c.classList.toggle("on"); picked.N.has(m.id)?picked.N.delete(m.id):picked.N.add(m.id); renderCards(); };
+  $("#pickN").appendChild(c);
+});
+
+let lastPayload = null;
+
+function renderCards(){ renderGroup("cardsA","A",CONFIG.modules,true); renderGroup("cardsN","N",CONFIG.nonAcademic,false); }
+
+function renderGroup(cid, key, defs, isAcad){
+  const box = $("#"+cid);
+  Array.from(box.children).forEach(ch=>{ if(!defs.find(d=>d.id===ch.dataset.id)) ch.remove(); });
+  defs.forEach(d=>{
+    let card = box.querySelector('[data-id="'+d.id+'"]');
+    if(picked[key].has(d.id)){ if(!card){ card=buildCard(d,isAcad); box.appendChild(card); } }
+    else if(card){ card.remove(); }
+  });
+}
+
+function buildCard(d, isAcad){
+  const card = el("div","modcard"+(isAcad?"":" non"));
+  card.dataset.id = d.id;
+  card.innerHTML = '<h2>'+esc(d.name)+'</h2>';
+  const list = el("div","items");
+  card.appendChild(list);
+  const add = el("button","add","+ Add another point about "+esc(d.name));
+  add.type="button";
+  add.onclick = ()=>{ list.appendChild(buildItem(d,isAcad)); };
+  card.appendChild(add);
+  list.appendChild(buildItem(d,isAcad));
+  return card;
+}
+
+function buildItem(d, isAcad){
+  const it = el("div","item");
+  it.dataset.kind = isAcad?"A":"N";
+  it.dataset.mod = d.name;
+
+  let html = '<div class="ih"><b>Feedback item</b><button type="button" class="del">Remove</button></div>';
+
+  if(isAcad){
+    html += '<div class="row">'
+      + '<div><label>Class type <span class="opt">(optional)</span></label>'
+      + '<select class="i_type"><option value="">— skip —</option>'
+      + d.types.map(t=>'<option>'+esc(t)+'</option>').join("")+'</select></div>'
+      + '<div><label>Instructor <span class="opt">(type it — optional)</span></label>'
+      + '<input type="text" class="i_teacher" placeholder="e.g. Dr Smith / the Tuesday seminar tutor"></div></div>'
+      + '<label>Which session / when / which part of it? <span class="opt">(type it — optional)</span></label>'
+      + '<input type="text" class="i_slot" placeholder="e.g. Week 5 Mon periods 3-4, the quiz section / Tue Seminar Group B">'
+      + '<label>Issue category</label><select class="i_cat">'
+      + CONFIG.acadTypes.map(t=>'<option>'+esc(t)+'</option>').join("")+'</select>';
+  } else {
+    html += '<label>Which system / page / place? <span class="opt">(type it — optional)</span></label>'
+      + '<input type="text" class="i_slot" placeholder="e.g. Attendance System — mobile sign-in page / Library 3rd floor">'
+      + '<label>Issue category</label><select class="i_cat">'
+      + d.types.map(t=>'<option>'+esc(t)+'</option>').join("")+'</select>';
+  }
+
+  html += '<label>What is happening? <span class="opt">(please write this — it is the part we act on)</span></label>'
+    + '<textarea class="i_desc" placeholder="What happened, when, and what the impact is. Concrete examples help most."></textarea>'
+    + '<div class="row">'
+    + '<div><label>How many students are affected <span class="opt">(sets priority — optional)</span></label>'
+    + '<select class="i_scope"><option value="">— skip —</option>'+CONFIG.scope.map(t=>'<option>'+esc(t)+'</option>').join("")+'</select></div>'
+    + '<div><label>Urgency <span class="opt">(optional)</span></label>'
+    + '<select class="i_urg"><option value="">— skip —</option>'+CONFIG.urgency.map(t=>'<option>'+esc(t)+'</option>').join("")+'</select></div></div>'
+    + '<label>What change would you like? <span class="opt">(optional but recommended)</span></label>'
+    + '<textarea class="i_fix" placeholder="One line: I would like ____ to make ____ change"></textarea>'
+    + '<label>Discuss this at the LCF meeting? <span class="opt">(optional)</span></label>'
+    + '<select class="i_meet"><option>Yes</option><option>No</option><option value="">— skip —</option></select>';
+
+  it.innerHTML = html;
+  it.querySelector(".del").onclick = ()=>{
+    const p = it.parentElement;
+    it.remove();
+    if(p.children.length===0) p.parentElement.querySelector(".add").click();
+  };
+  return it;
+}
+
+function collect(){
+  const want = $("#f_want").value;
+  const base = {
+    timestamp: new Date().toISOString(),
+    program: PROGRAM,
+    year: "Y1",
+    admin_class: "",
+    wants_reply: want.indexOf("Yes") === 0 ? "Yes" : "No",
+    contact: want.indexOf("Yes") === 0 ? $("#f_contact").value.trim() : "",
+    top_priority: $("#f_top").value.trim(),
+    praise: $("#f_praise").value.trim(),
+    extra: $("#f_extra").value.trim()
+  };
+  const items = [];
+  document.querySelectorAll(".item").forEach(it=>{
+    const desc = it.querySelector(".i_desc").value.trim();
+    if(!desc) return;
+    items.push({
+      category: it.dataset.kind==="A" ? "Academic" : "Non-academic",
+      module: it.dataset.mod,
+      sub_type: it.querySelector(".i_type") ? it.querySelector(".i_type").value : "",
+      teacher: it.querySelector(".i_teacher") ? it.querySelector(".i_teacher").value.trim() : "",
+      target: it.querySelector(".i_slot") ? it.querySelector(".i_slot").value.trim() : "",
+      issue_type: it.querySelector(".i_cat").value,
+      description: desc,
+      scope: it.querySelector(".i_scope").value,
+      urgency: it.querySelector(".i_urg").value,
+      suggestion: it.querySelector(".i_fix").value.trim(),
+      to_meeting: it.querySelector(".i_meet").value
+    });
+  });
+  return {respondent: base, items: items};
+}
+
+/* Column order matches the merge/report scripts exactly. */
+const CSV_HEAD = ["Timestamp","Programme","Year","Admin class","Wants reply","Contact (WeChat / email)",
+  "Category","Module","Class type","Instructor","Session / when / where","Issue category","Description",
+  "Scope","Urgency","Suggested change","To meeting","Top priority","Positive feedback","Other comments"];
+const NA = "(not given)";
+
+function toCSV(p){
+  const rows=[CSV_HEAD];
+  const r=p.respondent;
+  const base=[r.timestamp, r.program||NA, r.year, r.admin_class||NA, r.wants_reply, r.contact||""];
+  const tail=[r.top_priority, r.praise, r.extra];
+  if(p.items.length===0){
+    rows.push(base.concat(["","","","","","","(only overall comments were given)","","","",""],tail));
+  }
+  p.items.forEach(i=>{
+    rows.push(base.concat([i.category, i.module, i.sub_type||NA, i.teacher||NA,
+      i.target||NA, i.issue_type, i.description, i.scope||NA, i.urgency||NA,
+      i.suggestion, i.to_meeting||NA],tail));
+  });
+  return "\ufeff"+rows.map(row=>row.map(c=>{
+    const s=String(c==null?"":c).replace(/"/g,'""');
+    return /[",\n]/.test(s)?'"'+s+'"':s;
+  }).join(",")).join("\r\n");
+}
+
+function toText(p){
+  const r=p.respondent;
+  let s="【LCF Feedback】"+(r.program||NA)+" · Y1 · "
+    +(r.wants_reply==="Yes"?"reply requested ("+(r.contact||"no contact given")+")":"anonymous")+"\n";
+  if(r.top_priority) s+="Top priority: "+r.top_priority+"\n";
+  s+="----------\n";
+  p.items.forEach((i,n)=>{
+    s+=(n+1)+". ["+i.category+"] "+i.module
+      +(i.sub_type?" / "+i.sub_type:"")+(i.teacher?" / Instructor: "+i.teacher:"")+(i.target?" / "+i.target:"")+"\n"
+      +"   Category: "+i.issue_type+" | Scope: "+(i.scope||"n/a")+" | Urgency: "+(i.urgency||"n/a")
+      +" | To meeting: "+(i.to_meeting||"n/a")+"\n"
+      +"   What: "+i.description+"\n"
+      +(i.suggestion?"   Suggested change: "+i.suggestion+"\n":"");
+  });
+  if(r.praise) s+="----------\nPositive: "+r.praise+"\n";
+  if(r.extra) s+="Other: "+r.extra+"\n";
+  return s;
+}
+
+function download(name, content, type){
+  const b=new Blob([content],{type:type||"text/plain;charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(b); a.download=name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+
+function showResult(p, uploaded){
+  $("#secResult").classList.remove("hide");
+  let msg="Recorded "+p.items.length+" structured item(s).";
+  if(CONFIG.SUBMIT_ENDPOINT){
+    msg += uploaded ? " Uploaded to the LCF server. Nothing else needed."
+                    : " Upload FAILED — please download the CSV below and send it to your representative.";
+  } else {
+    msg += " Please send the downloaded CSV to your LCF representative.";
+  }
+  $("#okMsg").innerHTML='<div class="'+(uploaded||!CONFIG.SUBMIT_ENDPOINT?"ok":"err")+'">'+msg+'</div>';
+  let h="<table><tr><th>#</th><th>Routed to</th><th>Category</th><th>What</th><th>Scope</th><th>Urgency</th><th>Meeting</th></tr>";
+  p.items.forEach((i,n)=>{
+    h+="<tr><td>"+(n+1)+"</td><td>"+esc(i.module)+(i.teacher?"<br>"+esc(i.teacher):"")+"</td><td>"+esc(i.issue_type)
+      +"</td><td>"+esc(i.description)+(i.suggestion?"<br><i>Suggested: "+esc(i.suggestion)+"</i>":"")+"</td><td>"+esc(i.scope||"-")
+      +"</td><td>"+esc(i.urgency||"-")+"</td><td>"+esc(i.to_meeting||"-")+"</td></tr>";
+  });
+  h+="</table>";
+  $("#preview").innerHTML=h;
+}
+
+$("#btnSubmit").onclick=async()=>{
+  const p=collect();
+  if(p.items.length===0 && !p.respondent.top_priority && !p.respondent.extra && !p.respondent.praise){
+    alert("You have not written any feedback yet — the description box is the one that matters."); return;
+  }
+  if(p.respondent.wants_reply==="Yes" && !p.respondent.contact){
+    if(!confirm("You asked for a reply but did not leave a WeChat ID or email. Submit anyway?")) return;
+  }
+  lastPayload=p;
+  let uploaded=false;
+  if(CONFIG.SUBMIT_ENDPOINT){
+    try{
+      const res=await fetch(CONFIG.SUBMIT_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(p)});
+      uploaded=res.ok;
+    }catch(e){ uploaded=false; }
+  }
+  showResult(p, uploaded);
+  download("LCF_feedback_"+(p.respondent.program||"").replace(/\s+/g,"")+"_"+Date.now()+".csv",
+           toCSV(p), "text/csv;charset=utf-8");
+  $("#secResult").scrollIntoView({behavior:"smooth"});
+};
+
+$("#btnCopy").onclick=()=>{
+  if(!lastPayload) return;
+  navigator.clipboard.writeText(toText(lastPayload)).then(()=>alert("Copied. Paste it into WeChat or an email."),()=>alert("Copy failed."));
+};
+$("#btnCsv").onclick=()=>{ if(lastPayload) download("LCF_feedback_"+Date.now()+".csv", toCSV(lastPayload), "text/csv;charset=utf-8"); };
+$("#btnJson").onclick=()=>{ if(lastPayload) download("LCF_feedback_"+Date.now()+".json", JSON.stringify(lastPayload,null,2), "application/json"); };
+$("#btnAgain").onclick=()=>{ location.reload(); };
+
+renderCards();
+</script>
+</body>
+</html>

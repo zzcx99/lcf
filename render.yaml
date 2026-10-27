@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: lcf-survey
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn host_survey:APP --bind 0.0.0.0:$PORT
+    envVars:
+      - key: LCF_TOKEN
+        value: lcf2025
